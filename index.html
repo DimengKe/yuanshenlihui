@@ -118,6 +118,7 @@ nav {
     flex-wrap: wrap;
 }
 
+/* 优化元素按钮容器 */
 .elements {
     display: flex;
     gap: 8px;
@@ -126,28 +127,86 @@ nav {
     min-width: 0;
 }
 
+/* 元素按钮样式 - 极致简化版 */
 .element-btn {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 6px;
-    transition: transform 0.2s, opacity 0.2s;
-    border-radius: 8px;
-    background-color: #f8f9fa;
+    padding: 0; /* 移除内边距 */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 32px; /* 缩小20%：从40px改为32px */
+    height: 32px; /* 缩小20%：从40px改为32px */
+    border-radius: 0; /* 移除圆角 */
 }
 
 .element-btn:hover {
-    transform: scale(1.08);
-    background-color: #e9ecef;
+    transform: scale(1.15) translateY(-2px);
 }
 
 .element-btn:active {
-    transform: scale(0.98);
+    transform: scale(0.95) translateY(0);
+    transition: transform 0.1s;
 }
 
 .element-btn img {
-    width: 46px;
-    height: 46px;
+    width: 100%; /* 图片填满按钮 */
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.element-btn:hover img {
+    transform: scale(1.08); /* 缩小悬停放大效果：从1.1改为1.08 */
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)) brightness(1.1);
+}
+
+/* 添加选中的元素按钮样式 */
+.element-btn.active img {
+    transform: scale(1.1); /* 改为放大10%：原来是filter效果，现在添加transform */
+    filter: drop-shadow(0 2px 6px rgba(0, 123, 255, 0.4)) brightness(1.2);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        filter: drop-shadow(0 2px 6px rgba(0, 123, 255, 0.4)) brightness(1.2);
+    }
+    50% {
+        filter: drop-shadow(0 2px 8px rgba(0, 123, 255, 0.6)) brightness(1.3);
+    }
+    100% {
+        filter: drop-shadow(0 2px 6px rgba(0, 123, 255, 0.4)) brightness(1.2);
+    }
+}
+
+/* 元素提示效果 */
+.element-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.element-btn:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    bottom: -28px;
 }
 
 /* 添加版权文本样式 */
@@ -179,22 +238,22 @@ nav {
     flex-shrink: 0;
 }
 
-/* 优化筛选按钮样式 - 更小巧美观 */
+/* 优化筛选按钮样式 */
 .filter-btn {
     padding: 6px 14px;
     background-color: #f8f9fa;
     color: #495057;
     border: 1.5px solid #dee2e6;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.3px;
     white-space: nowrap;
     min-width: 70px;
     text-align: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     height: 36px;
     display: flex;
     align-items: center;
@@ -204,8 +263,13 @@ nav {
 .filter-btn:hover {
     background-color: #e9ecef;
     border-color: #adb5bd;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.filter-btn:active {
+    transform: translateY(0) scale(0.98);
+    transition: transform 0.1s;
 }
 
 /* 为当前活动的筛选按钮添加样式 */
@@ -213,7 +277,7 @@ nav {
     background-color: #007bff;
     color: white;
     border-color: #007bff;
-    box-shadow: 0 2px 5px rgba(0,123,255,0.3);
+    box-shadow: 0 3px 10px rgba(0,123,255,0.25);
 }
 
 .filter-btn.active:hover {
@@ -232,9 +296,9 @@ nav {
         font-size: 13.5px;
     }
     
-    .element-btn img {
-        width: 42px;
-        height: 42px;
+    .element-btn {
+        width: 28.8px; /* 缩小20%：从36px改为28.8px */
+        height: 28.8px; /* 缩小20%：从36px改为28.8px */
     }
     
     .filter-btn {
@@ -278,6 +342,18 @@ nav {
         flex: 1 1 100%;
         justify-content: center;
         margin-bottom: 0;
+        gap: 6px;
+    }
+    
+    .element-btn {
+        width: 25.6px; /* 缩小20%：从32px改为25.6px */
+        height: 25.6px; /* 缩小20%：从32px改为25.6px */
+    }
+    
+    .element-btn::after {
+        font-size: 10px;
+        padding: 3px 6px;
+        bottom: -25px;
     }
     
     .copyright-text {
@@ -292,11 +368,6 @@ nav {
         flex: 1 1 100%;
         justify-content: center;
         margin-top: 8px;
-    }
-    
-    .element-btn img {
-        width: 40px;
-        height: 40px;
     }
     
     .filter-btn {
@@ -315,6 +386,15 @@ nav {
     .copyright-text {
         display: none; /* 在小屏幕上隐藏版权文本以节省空间 */
     }
+    
+    .elements {
+        gap: 4px;
+    }
+    
+    .element-btn {
+        width: 24px; /* 缩小20%：从30px改为24px */
+        height: 24px; /* 缩小20%：从30px改为24px */
+    }
 }
 
 @media (max-width: 480px) {
@@ -323,12 +403,12 @@ nav {
     }
     
     .element-btn {
-        padding: 4px;
+        width: 22.4px; /* 缩小20%：从28px改为22.4px */
+        height: 22.4px; /* 缩小20%：从28px改为22.4px */
     }
     
-    .element-btn img {
-        width: 36px;
-        height: 36px;
+    .element-btn::after {
+        display: none; /* 在手机上隐藏提示文字 */
     }
     
     .filter-btn {
@@ -336,7 +416,7 @@ nav {
         font-size: 11.5px;
         min-width: 55px;
         height: 30px;
-        border-radius: 5px;
+        border-radius: 6px;
     }
     
     .nav-container {
@@ -346,12 +426,12 @@ nav {
 
 @media (max-width: 360px) {
     .elements {
-        gap: 6px;
+        gap: 3px;
     }
     
-    .element-btn img {
-        width: 34px;
-        height: 34px;
+    .element-btn {
+        width: 20.8px; /* 缩小20%：从26px改为20.8px */
+        height: 20.8px; /* 缩小20%：从26px改为20.8px */
     }
     
     .filter-container {
@@ -394,42 +474,45 @@ main {
 
 .character-card {
     background-color: white;
-    border-radius: 4px;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .character-card:hover {
-    transform: scale(1.05);
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
 .character-card img {
     width: 100%;
     height: 100px;
     object-fit: contain;
-    background-color: #f0f0f0;
+    background-color: #f8f9fa;
 }
 
 .character-info {
-    padding: 0px;
+    padding: 8px;
     text-align: center;
 }
 
 .character-name {
     font-weight: bold;
-    font-size: 12px;
-    margin-bottom: 3px;
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: #333;
 }
 
 .character-rarity {
-    font-size: 10px;
+    font-size: 11px;
     color: #ffd700;
+    letter-spacing: 1px;
 }
 
 .four-star {
-    color: #c0c0c0;
+    color: #b19cd9;
 }
 
 .modal {
@@ -441,38 +524,41 @@ main {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(3px);
 }
 
 .modal-content {
     background-color: #fefefe;
     margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
+    padding: 25px;
+    border: 1px solid #ddd;
     width: auto;
     max-width: 90vw;
     max-height: 90vh;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
 }
 
 .close {
-    color: #aaa;
+    color: #777;
     float: right;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    transition: color 0.2s;
 }
 
 .close:hover {
-    color: black;
+    color: #333;
 }
 
 .images {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
 }
 
 .image-item {
@@ -480,15 +566,18 @@ main {
 }
 
 .image-item p {
-    margin: 0 0 5px 0;
-    font-size: 14px;
+    margin: 0 0 8px 0;
+    font-size: 15px;
     font-weight: bold;
-    color: #333;
+    color: #444;
 }
 
 .images img {
     width: auto;
     height: auto;
+    max-width: 100%;
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
     </style>
 </head>
@@ -507,13 +596,27 @@ main {
     <nav>
         <div class="nav-container">
             <div class="elements">
-                <button class="element-btn" data-element="wind">🌪️</button>
-                <button class="element-btn" data-element="fire">🔥</button>
-                <button class="element-btn" data-element="thunder">⚡️</button>
-                <button class="element-btn" data-element="water">💧</button>
-                <button class="element-btn" data-element="ice">❄️</button>
-                <button class="element-btn" data-element="rock">🪨</button>
-                <button class="element-btn" data-element="grass">🌱</button>
+                <button class="element-btn" data-element="wind">
+                    <img src="https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/1bedb7dba5e27a3862b64aba36cc36dc_2138916300648255119.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png">
+                </button>
+                <button class="element-btn" data-element="fire">
+                    <img src="https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/aaffe1cb0474646d1ea232b3f416a366_6878553759021284414.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png">
+                </button>
+                <button class="element-btn" data-element="thunder">
+                    <img src="https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/3d38ea8ef5be43980c7e273a2a6339c5_5553804292567036135.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png">
+                </button>
+                <button class="element-btn" data-element="water">
+                    <img src="https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/3d319d6dcb3c44c42c821611c7f92414_8650353030136772672.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png">
+                </button>
+                <button class="element-btn" data-element="ice">
+                    <img src="https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/def15643d289c93a492745a4fe0a2eb1_7101471605175190075.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png">
+                </button>
+                <button class="element-btn" data-element="rock">
+                    <img src="https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/639b5999c93f50e4534b2085297c332c_3852061080066824323.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png">
+                </button>
+                <button class="element-btn" data-element="grass">
+                    <img src="https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/040504561979ad5006352bbffb091e23_2446430503307686957.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png">
+                </button>
             </div>
             <!-- 添加版权文本 -->
             <div class="copyright-text">©️:狄梦珂</div>
@@ -728,7 +831,7 @@ const characterData = {
                 portraitH: "https://upload-bbs.miyoushe.com/upload/2024/11/27/364887579/1996a74aa23b8b056758029188d8d9be_2927589326392956288.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
                 portraitV: "https://upload-bbs.miyoushe.com/upload/2024/11/27/364887579/cab6ddb4798257f7709846c3987c3879_5146624559518097660.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
                 gacha: "https://upload-bbs.miyoushe.com/upload/2024/12/20/364887579/4f8249fb9a837cceebcc51cea177c185_6981543895759485654.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
-                birthday: "https://via.placeholder.com/400x300/87CEEB/FFFFFF?text=风元素角色13+生日立绘",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2025/12/31/75276539/bd0907867f198e93a4a9a5315668e224_5387980660251372087.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 namecard: "https://upload-bbs.miyoushe.com/upload/2024/12/20/364887579/4f9b1f1e7700f06f017429c4a47a73b0_5673375269170427812.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
             }
         },
@@ -770,15 +873,28 @@ const characterData = {
             }
         },
         {
+            name: "法尔伽",
+            rarity: 5,
+            avatar: "https://api.hakush.in/gi/UI/UI_AvatarIcon_Varka.webp",/*头像链接*/
+            images: {
+                portraitH: "https://via.placeholder.com/400x300/87CEEB/FFFFFF?text=风元素角色16+横版立绘",/*横版立绘链接*/
+                portraitV: "https://via.placeholder.com/300x400/87CEEB/FFFFFF?text=风元素角色16+竖版立绘",/* 竖版立绘链接*/
+                gacha: "https://api.hakush.in/gi/UI/UI_Gacha_AvatarImg_Varka.webp",/*抽卡立绘链接*/
+                birthday: "https://via.placeholder.com/400x300/87CEEB/FFFFFF?text=风元素角色16+生日立绘",/* 生日立绘链接 */
+                namecard: "https://api.hakush.in/gi/UI/UI_NameCardPic_Varka_P.webp"/* 角色名片链接 */,
+                wallpaper: "https://via.placeholder.com/800x600/87CEEB/FFFFFF?text=风元素角色15+活动壁纸"/* 活动壁纸链接 */
+            }
+        },
+        {
             name: "风系预留角色位",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/87CEEB/FFFFFF?text=风元素角色16",
+            avatar: "https://api.hakush.in/gi/UI/UI_AvatarIcon_Varka.web",/* 头像链接 */
             images: {
-                portraitH: "https://via.placeholder.com/400x300/87CEEB/FFFFFF?text=风元素角色16+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/87CEEB/FFFFFF?text=风元素角色16+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/87CEEB/FFFFFF?text=风元素角色16+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/87CEEB/FFFFFF?text=风元素角色16+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/87CEEB/FFFFFF?text=风元素角色16+角色名片"
+                portraitH: "https://via.placeholder.com/400x300/87CEEB/FFFFFF?text=风元素角色16+横版立绘",/*横版立绘链接*/
+                portraitV: "https://via.placeholder.com/300x400/87CEEB/FFFFFF?text=风元素角色16+竖版立绘",/* 竖版立绘链接*/
+                gacha: "https://via.placeholder.com/400x500/87CEEB/FFFFFF?text=风元素角色16+抽卡立绘",/*抽卡立绘链接*/
+                birthday: "https://via.placeholder.com/400x300/87CEEB/FFFFFF?text=风元素角色16+生日立绘",/* 生日立绘链接 */
+                namecard: "https://via.placeholder.com/300x400/87CEEB/FFFFFF?text=风元素角色16+角色名片"/* 活动壁纸链接 */
             }
         }
     ],
@@ -989,13 +1105,13 @@ const characterData = {
         {
             name: "火系预留角色位",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/FF6B35/FFFFFF?text=火元素角色16",
+            avatar: "https://via.placeholder.com/150x200/FF6B35/FFFFFF?text=火元素角色16",/* 头像链接 */
             images: {
-                portraitH: "https://via.placeholder.com/400x300/FF6B35/FFFFFF?text=火元素角色16+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/FF6B35/FFFFFF?text=火元素角色16+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/FF6B35/FFFFFF?text=火元素角色16+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/FF6B35/FFFFFF?text=火元素角色16+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/FF6B35/FFFFFF?text=火元素角色16+角色名片"
+                portraitH: "https://via.placeholder.com/400x300/FF6B35/FFFFFF?text=火元素角色16+横版立绘",/* 横版立绘链接 */
+                portraitV: "https://via.placeholder.com/300x400/FF6B35/FFFFFF?text=火元素角色16+竖版立绘",/* 竖版立绘链接 */
+                gacha: "https://via.placeholder.com/400x500/FF6B35/FFFFFF?text=火元素角色16+抽卡立绘",/* 抽卡立绘链接 */
+                birthday: "https://via.placeholder.com/400x300/FF6B35/FFFFFF?text=火元素角色16+生日立绘",/* 生日立绘链接 */
+                namecard: "https://via.placeholder.com/300x400/FF6B35/FFFFFF?text=火元素角色16+角色名片"/* 角色名片链接 */
             }
         }
 
@@ -1231,13 +1347,13 @@ const characterData = {
         {
             name: "雷系预留角色位",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/FFD700/FFFFFF?text=雷元素角色18",
+            avatar: "https://via.placeholder.com/150x200/FFD700/FFFFFF?text=雷元素角色18",/* 头像链接 */
             images: {
-                portraitH: "https://via.placeholder.com/400x300/FFD700/FFFFFF?text=雷元素角色18+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/FFD700/FFFFFF?text=雷元素角色18+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/FFD700/FFFFFF?text=雷元素角色18+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/FFD700/FFFFFF?text=雷元素角色18+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/FFD700/FFFFFF?text=雷元素角色18+角色名片"
+                portraitH: "https://via.placeholder.com/400x300/FFD700/FFFFFF?text=雷元素角色18+横版立绘",/* 横版立绘链接 */
+                portraitV: "https://via.placeholder.com/300x400/FFD700/FFFFFF?text=雷元素角色18+竖版立绘",/* 竖版立绘链接 */
+                gacha: "https://via.placeholder.com/400x500/FFD700/FFFFFF?text=雷元素角色18+抽卡立绘",/* 抽卡立绘链接 */
+                birthday: "https://via.placeholder.com/400x300/FFD700/FFFFFF?text=雷元素角色18+生日立绘",/* 生日立绘链接 */
+                namecard: "https://via.placeholder.com/300x400/FFD700/FFFFFF?text=雷元素角色18+角色名片"/* 角色名片链接 */
             }
         }
     ],
@@ -1451,13 +1567,13 @@ const characterData = {
         {
             name: "水系预留角色位",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/1E88E5/FFFFFF?text=水元素角色16",
+            avatar: "https://via.placeholder.com/150x200/1E88E5/FFFFFF?text=水元素角色16",/* 头像链接 */
             images: {
-                portraitH: "https://via.placeholder.com/400x300/1E88E5/FFFFFF?text=水元素角色16+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/1E88E5/FFFFFF?text=水元素角色16+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/1E88E5/FFFFFF?text=水元素角色16+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/1E88E5/FFFFFF?text=水元素角色16+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/1E88E5/FFFFFF?text=水元素角色16+角色名片"
+                portraitH: "https://via.placeholder.com/400x300/1E88E5/FFFFFF?text=水元素角色16+横版立绘",/* 横版立绘链接 */
+                portraitV: "https://via.placeholder.com/300x400/1E88E5/FFFFFF?text=水元素角色16+竖版立绘",/* 竖版立绘链接 */
+                gacha: "https://via.placeholder.com/400x500/1E88E5/FFFFFF?text=水元素角色16+抽卡立绘",/* 抽卡立绘链接 */
+                birthday: "https://via.placeholder.com/400x300/1E88E5/FFFFFF?text=水元素角色16+生日立绘",/* 生日立绘链接 */
+                namecard: "https://via.placeholder.com/300x400/1E88E5/FFFFFF?text=水元素角色16+角色名片"/* 角色名片链接 */
             }
         }
     ],
@@ -1467,219 +1583,232 @@ const characterData = {
         {
             name: "甘雨",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=甘雨+头像",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2021/01/07/78f94867574b9af0714d401d451627d2.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=甘雨+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=甘雨+竖版立绘",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2021/01/06/75276539/fc596eb7f256afd5bcaf918b7232b6cd_8134364451559769689.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2021/01/06/75276539/cca6aca03b2231a48442d22794cb835a_5805460304598764966.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 gacha: "https://api.hakush.in/gi/UI/UI_Gacha_AvatarImg_Ganyu.webp",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=甘雨+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=甘雨+角色名片",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2025/12/02/75276539/2495cb0567fb833658bf3fd295210c8e_985455985195030662.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/15/364887579/ffbd48a780825369a5913a2fa6ac6808_6106718680811805819.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/4FC3F7/FFFFFF?text=甘雨+活动壁纸"
             }
         },
         // 添加更多冰元素角色...
         {
-            name: "冰元素角色2",
+            name: "凯亚",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色2",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2020/11/25/1abdcc59c03e2b04f5b5dc7a1b476aef.jpeg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色2+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色2+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色2+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色2+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色2+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2019/06/19/75276539/7924064e8e9c906c4acb94805030af21_1438036378205851604.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2019/11/15/76387920/549df26d8cddad00c60e702aca565090_6505604942433446210.jpeg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpeg",
+                gacha: "https://api.hakush.in/gi/UI/UI_Gacha_AvatarImg_Kaeya.webp",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/12/01/364887579/4ad4f028d36d368df1705605e3ffa941_6645513705371795348.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/16/364887579/0feb7841e6c5be9a57e4389d62daab12_4607512049937133469.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "冰元素角色3",
+            name: "七七",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色3",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2020/11/25/3ac48dcf24cf762daad7adbe5da1e87c.jpeg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色3+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色3+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色3+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色3+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色3+角色名片",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2020/09/04/75276539/d72c9aa4310edc2ac76a5f633eb4dff3_4537152373785134983.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2020/09/04/75276539/7e9246f2991b32569106bd487c46439f_6597616954723374063.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://api.hakush.in/gi/UI/UI_Gacha_AvatarImg_Qiqi.webp",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/03/04/364887579/273f91d9c5c65b534d3364ac5f545de1_7461528079114622748.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/15/364887579/be5e84c0c0632d31116ce489aed628b2_4684170072862871496.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/4FC3F7/FFFFFF?text=冰元素角色3+活动壁纸"
             }
         },
         {
-            name: "冰元素角色4",
+            name: "重云",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色4",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2020/11/25/f612705ea1df6ca9d1331909cfe0c30e.jpeg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色4+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色4+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色4+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色4+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色4+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2020/06/03/75276539/af29182284e870488b4b53859ecc73e6_4756085235530559436.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2020/06/03/75276539/4b5e9a5193c8bd883fa79df0baeac9e6_2564622153649601418.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://api.hakush.in/gi/UI/UI_Gacha_AvatarImg_Chongyun.webp",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2023/09/07/364887579/cd3a7af0bcbfea9b877225198c010a97_6991065965768264969.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/16/364887579/0e0c7fcff61ca11eb7c3e8cfd036e9aa_3841047781547872516.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "冰元素角色5",
+            name: "神里绫华",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色5",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2021/07/13/f2b3b66e974c175c2e0a6cef602f2e8c_5966158557546691737.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色5+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色5+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色5+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色5+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色5+角色名片",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/a532eb9062e28d46f0439a436cb947cd_7831860337803630515.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/e26ddffc3a3ea653e7209eaafb6fadea_5451789480075610635.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/53d4746ee5c58caa8790a90d71683412_8498582218918826760.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2023/09/29/364887579/2e9d7344b8511ad34e7e7986f10f7da6_1057147552862558437.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/15/364887579/4dd1e63a990e19141b3a1219883b15b4_4496285567337976465.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/4FC3F7/FFFFFF?text=冰元素角色5+活动壁纸"
             }
         },
         {
-            name: "冰元素角色6",
+            name: "迪奥娜",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色6",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2020/11/25/f30b51ee0d26a84330cde95739a45570.jpeg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色6+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色6+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色6+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色6+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色6+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/8b12c1c49894903d3a931e85f7576b17_1910560290473765463.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/1a200946816f0ae15d12634d6c9568af_7678885322993073720.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/f3c8fa1237a2cf613408692cc743f254_1140560303526957689.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/01/18/364887579/889532b557a4c4d4dc33f51c808a7afb_6451232032218599874.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/16/364887579/1ee3a1cb78012126b8a6cb815351455d_5436814560135022956.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "冰元素角色7",
+            name: "优菈",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色7",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2021/05/11/93a6cb5e855079425e3ba30ae6d6aa95_6758132905865840172.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色7+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色7+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色7+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色7+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色7+角色名片",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/47a748da61aa9dc2441adb1a991d6c10_4462289127910153057.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/fa67d5647aee7c2a8ad1159d8954085b_7746678979343418388.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/be6d7003f2345a4f04ea96d122a6869f_4121259898065983779.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2023/10/25/364887579/80bf7a2b6dcd345eb6a3a7294c4666c3_4012088349175631613.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/15/364887579/03284342031b7bce7450a3bf3fbce218_2677902004382809754.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/4FC3F7/FFFFFF?text=冰元素角色7+活动壁纸"
             }
         },
         {
-            name: "冰元素角色8",
+            name: "罗莎莉亚",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色8",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2022/02/18/44a5d7a0975b20535b84846045364420_2733642551709417040.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色8+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色8+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色8+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色8+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色8+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/64cb48c24737a289c9308b0000d27ead_7970880973376406397.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/0de6204c8d00b789520f0c115e0644ad_7316607023178156260.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/5862e8f8bb9ee820c2cb11bed7ef866b_8745578725485393955.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/01/24/364887579/e234b7787dd8b527b1427c9e53099bf0_2167775171214276863.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/16/364887579/58d0dc8dd3b67b291d7aac20f78a49a4_478336963267547354.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "冰元素角色9",
+            name: "埃洛伊",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色9",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2021/09/03/922d9d4f0eee1599c52d96498946723b_4962729256350529861.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色9+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色9+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色9+抽卡立绘",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/87d813ac1e4be9abd05e95fcb290b25d_3308867426895806109.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/0f260f35de7905eeceb04d565b3ab00e_3885419987614108300.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/4a72a5e0ed67562cb4ff09b9f6eeac24_4495420920748900817.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
                 birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色9+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色9+角色名片",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/15/364887579/c1024ef97515b11f6f911bc93a38087e_1403222232696135689.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/4FC3F7/FFFFFF?text=冰元素角色9+活动壁纸"
             }
         },
         {
-            name: "冰元素角色10",
+            name: "莱依拉",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色10",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2022/10/09/6a3850b0c8a202ecba6ceda001cffa45_6912400836781443214.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色10+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色10+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色10+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色10+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色10+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/8624407050b51fd33b1470d5fd1b2ab3_663336422589638169.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/71082a43b4d892aecb8fcd3065ec61d8_6914592488132017165.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/d7747319f91ecd7a92056e7648f5e6ee_2360883380733610050.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2023/12/19/364887579/19c47731865876a7dbb6f38e6891b92d_7014492170775761982.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/16/364887579/98ba750bde826e07f4b1d37aca94e6d7_1609719163533943958.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "冰元素角色11",
+            name: "申鹤",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色11",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2021/12/27/3e4062dff7ddec6804cc9d55db6395b9_7552778112439588478.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色11+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色11+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色11+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色11+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色11+角色名片",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/59407bbd25b032f0fac64bf410fb409f_7372086217257569665.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/6eb466b2953b6489bf23e1df8ce74453_6842566610189684798.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/ebd3b2524a137676d6a10be408ea075b_3353258955070433690.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2025/03/12/364887579/8af78fffa58d80d5b07da01722e28cd4_3974784059818262096.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/15/364887579/28207169ba5f557514368da414cac806_4312409737835747731.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/4FC3F7/FFFFFF?text=冰元素角色11+活动壁纸"
             }
         },
         {
-            name: "冰元素角色12",
+            name: "米卡",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色12",
+            avatar: "https://upload-bbs.miyoushe.com/upload/2023/02/21/5e385add4d7fd80ddf8213e0310ef7b2_208118388976273870.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色12+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色12+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色12+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色12+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色12+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/c0dc06d9a0cd506e40bdc1ab525d45c4_323320679467045512.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/2b3432632f14ce7e101bf392cc61f165_817392012333573948.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/81313abe861948f099c62d39029ea3d1_4451411773444788156.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/08/11/364887579/3a71154207338733a738448dbbbfdc92_6800781455933933127.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/16/364887579/63570518ca3b285157571fba5b7e61d1_4691651358276864007.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "冰元素角色13",
+            name: "莱欧斯利",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色13",
+            avatar: "https://bbs-static.miyoushe.com/static/2024/04/10/46e9fa7ae28775944aae7685db4df92a_9210269351379698442.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色13+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色13+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色13+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色13+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色13+角色名片",
-                wallpaper: "https://via.placeholder.com/800x600/4FC3F7/FFFFFF?text=冰元素角色13+活动壁纸"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/04/364887579/cb68f1afc701d402ca9a98e26fc58661_4242221111322672587.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/04/364887579/a34a17813f6603d179349e525138d929_246004621688043728.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/10/18/364887579/98d7d2ce9bfb8444e6cddbf94749fef6_9121042227000834499.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2023/11/23/364887579/165300a5d19e93f0bb4c278af96c6a31_3323691175038223190.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/11/06/364887579/1f9875a6f30ef6ce4bb335491c3f1983_6077811364226780995.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                wallpaper: "https://upload-bbs.miyoushe.com/upload/2023/10/12/364887579/b0dd8d9e2fa5c7e7fabb3403d05f9739_4689166030835730089.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg"
             }
         },
         {
-            name: "冰元素角色14",
+            name: "菲米尼",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色14",
+            avatar: "https://bbs-static.miyoushe.com/static/2024/04/10/51a52e61004d6f50dc8e82a24e32e854_7947052056348825772.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色14+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色14+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色14+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色14+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色14+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/f8205866198f42b7da19038c7da27e16_718169084597285158.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/8ce65b9a954f942d05441c15199a1f43_6658849390757631127.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/05/364887579/66a7eeb25bea1d93000a6c9a029edf46_8720997932617824889.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2023/09/24/364887579/52be0e2c82a7a6375353d2f34d51e70c_8318036023973991423.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/16/364887579/1388153903f0cc7a7a667a2eb6979a1a_8401863022398638049.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "冰元素角色15",
+            name: "茜特菈莉",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色15",
+            avatar: "https://bbs-static.miyoushe.com/static/2024/11/28/dae49a2a5e8de80a67dd60cf3e34a121_2654227858249535646.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色15+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色15+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色15+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色15+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色15+角色名片",
-                wallpaper: "https://via.placeholder.com/800x600/4FC3F7/FFFFFF?text=冰元素角色15+活动壁纸"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2025/03/10/364887579/ddcad1b24e80bed0b5d7a451e27af42f_5325363576617791009.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2025/03/10/364887579/9d766b63f6ad1f62f9e22967972b2787_4669471161196215084.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2025/03/10/364887579/b0d64158febc54a4371e9b3daa2d36c5_5903897579172871542.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2025/03/10/364887579/89ce59535d58da6eb3bac75639047630_7592447161531852807.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2025/03/10/364887579/837a79e847fe19d1840c4469bdf035dd_7534642510850199969.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
+                wallpaper: "https://upload-bbs.miyoushe.com/upload/2025/03/10/364887579/ce1ebf77097d20b1c9073d5642f8407c_6916956180576345516.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "冰元素角色16",
+            name: "夏洛蒂",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色16",
+            avatar: "https://bbs-static.miyoushe.com/static/2024/04/10/2d6949ce4e8b43e946b2923c4b4f2455_3697630540991022673.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色16+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色16+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色16+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色16+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色16+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/25/364887579/698d896f2b71d210dbbaef4d47e2f071_4090145940091898232.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/25/364887579/19a75c29fb4150e13ec0558f9ec69163_3412358013712159016.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/11/04/364887579/1e98257b1978bf3c202e293f0b56bdb5_5359662367528635563.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/04/10/364887579/43c376c8968fe3e93c4945600c96b982_5419498957314814832.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/11/06/364887579/50093e520ee09aa29a76e7d80166b13b_5739490531626219631.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp"
             }
         },
         {
-            name: "冰元素角色17",
+            name: "爱可菲",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色17",
+            avatar: "https://bbs-static.miyoushe.com/static/2025/04/24/84ab5d07e05b87b0c0f249b577e1f449_4039231349731285836.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色17+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色17+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4FC3F7/FFFFFF?text=冰元素角色17+抽卡立绘",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2025/03/31/364887579/3802816fd020590efcf62e74207a9e3f_3841977347766798523.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2025/03/31/364887579/175359604842e14d2cfc693ede30fb8b_1377186936520671899.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2025/05/13/364887579/2859fd719bf2a1e24084da12b6be3740_4501534319049303077.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色17+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4FC3F7/FFFFFF?text=冰元素角色17+角色名片",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/d6fbd24564e73ed548986e2941d1746f_6677011014206393313.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/4FC3F7/FFFFFF?text=冰元素角色17+活动壁纸"
             }
         },
         {
-            name: "冰元素角色18",
+            name: "丝柯克",
+            rarity: 5,
+            avatar: "https://bbs-static.miyoushe.com/static/2025/06/06/a459ff3b1ab700ccbfe19387cb5ee473_3304141025157782905.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+            images: {
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2025/05/13/364887579/888c488ded6e885291806f763c700b6d_8264375085875152122.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2025/05/13/364887579/e82ca3de4734d6e58133503b0fff1062_7706776727282971212.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2025/08/06/364887579/77ec0beb3d7b68b263565e79e2d6f19b_7475192036439827475.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
+                birthday: "https://via.placeholder.com/400x300/4FC3F7/FFFFFF?text=冰元素角色18+生日立绘",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2025/08/06/364887579/087a815b637ebae34a317c8dfe5aee43_2477305270605907041.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
+                wallpaper: "https://via.placeholder.com/800x600/4FC3F7/FFFFFF?text=冰元素角色17+活动壁纸"
+            }
+        },
+        {
+            name: "冰系角色预留位",
             rarity: 4,
             avatar: "https://via.placeholder.com/150x200/4FC3F7/FFFFFF?text=冰元素角色18",
             images: {
@@ -1699,163 +1828,175 @@ const characterData = {
             rarity: 5,
             avatar: "https://bbs-static.miyoushe.com/static/2024/08/28/95ae86a1aea16edb032d3ba462200d7d_8064454282205880152.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=希诺宁+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=希诺宁+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=希诺宁+抽卡立绘",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/abb5d1d5bbd6bab099aa27f71df5d77c_2968246965238542811.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/9ee2ea292221375bb93c7efb7b0e97bb_1856189631440410504.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/e97bdc7014fae7fb73687144c9a8e29b_3101620114911078178.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=希诺宁+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=希诺宁+角色名片",
-                wallpaper: "https://via.placeholder.com/800x600/8D6E63/FFFFFF?text=希诺宁+活动壁纸"
+                namecard: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/2a151dcf7bac625e0a4922fe3d0c2a2a_2613410402927807689.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                wallpaper: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/c69d8641c33dfabd430c0cb6622a7946_3182358966705984324.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg"
             }
         },
         // 添加更多岩元素角色...
         {
-            name: "岩元素角色2",
+            name: "凝光",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/8D6E63/FFFFFF?text=岩元素角色2",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2020/11/25/d3951394d7613ea2806eef8d962fa2ee.jpeg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色2+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色2+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=岩元素角色2+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色2+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色2+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/e9751af538acf47a1f03f3fd1e9c0aed_8708630592669836316.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/aef10b884f57a33b065b8635ada20956_8304714706114436487.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/ce590eb64e99595b494556acfc08967d_5875374159664626945.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2023/09/04/364887579/234847660cb088698075caaf03b6a97b_4462292156137557210.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/10/364887579/e2c89d5e648fe4a87132174b7669c59e_8790540962769430361.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "岩元素角色3",
+            name: "钟离",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/8D6E63/FFFFFF?text=岩元素角色3",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2020/11/25/74eaf020ac94e1c95486bfa6e0a6ee35.jpeg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色3+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色3+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=岩元素角色3+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色3+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色3+角色名片",
-                wallpaper: "https://via.placeholder.com/800x600/8D6E63/FFFFFF?text=岩元素角色3+活动壁纸"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/5049fadc0daebedd432b21ade172cc73_3169071720687512621.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/099ffd58cac29147d7dd5303e0300f4d_4162735122361372706.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/cee71f7fd9ec983d91d918a3bd9a14f4_9152399596319871956.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2023/12/31/364887579/171a44186634144095f4d3a6b7a61d1c_312245828175037684.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/10/364887579/5a36e3ab289e6b5f4d3c22e901d6c321_5869125409157236677.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                wallpaper: "https://upload-bbs.miyoushe.com/upload/2023/12/20/364887579/381f4480a486b014ec3a5eb386ff095a_5989064735208661432.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg"
             }
         },
         {
-            name: "岩元素角色4",
+            name: "诺艾尔",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/8D6E63/FFFFFF?text=岩元素角色4",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2020/11/25/4e592c71fd4217252f08d06083cba07f.jpeg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色4+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色4+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=岩元素角色4+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色4+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色4+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/c6aa6cfe549e1ad8d00e27d0eb201459_376188403966524916.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/26e011bc1cb5e0b0206f4a6bc18b6dd7_8052201788384915729.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/e24b089f3e49ac022ec03d531d694d19_1601238958067178737.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/03/21/364887579/e0bd8f1c0c1f0feaba417490285a299a_3598150600181721553.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/10/364887579/5b3a1681fe19f1479132707cbd492d8a_2619357440946407639.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "岩元素角色5",
+            name: "阿贝多",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/8D6E63/FFFFFF?text=岩元素角色5",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2020/12/23/39878cade4462bf4441d07dbae510011.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色5+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色5+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=岩元素角色5+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色5+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色5+角色名片",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/657d97ed67fd1aa60a07cc86c7a804e7_77255968643708404.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/90803a05f900fd619e3613e7f6f9aa4f_7366446583716118111.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/43bc105d887f76452e7d0fc7e312c19b_8060782288873488180.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2023/09/13/364887579/88c48fef7b1227fabf10de8341c72630_790701329040088429.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/10/364887579/f9d9124118af2e1c7e7e2c8939ef2987_7732442435762407473.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/8D6E63/FFFFFF?text=岩元素角色5+活动壁纸"
             }
         },
         {
-            name: "岩元素角色6",
+            name: "五郎",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/8D6E63/FFFFFF?text=岩元素角色6",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2021/11/13/3f634a167c9f25230dd4fd72e18f7540_7893682481829898656.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色6+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色6+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=岩元素角色6+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色6+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色6+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/8bfc36d5b23c3556b41a1f8d424bb9e9_2629681463977657345.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/171238b043730e79a85c02cc9fb15f96_3907329169134519846.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/b558f7ef0a9d9c36348a9e9cc55a91dc_1884306558611419550.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/05/18/364887579/328d7aba0bf161ac9a724e6350fa6881_2563989874731291829.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/10/364887579/3acf6d41f49f76618232e13ef320342d_1292803259166503393.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "岩元素角色7",
+            name: "荒泷一斗",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/8D6E63/FFFFFF?text=岩元素角色7",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2021/11/13/361bf5d580d4dc12aad348f98351f7b1_2227564571396030396.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色7+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色7+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=岩元素角色7+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色7+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色7+角色名片",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/2b8549aec25000ff4356b4f96264b56e_4811083602974354427.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/2b17d656437bc3726653eb73ed763742_2570539686251062241.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/08627048094069db979b72e5fbefd3a6_3901641592659299077.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/06/02/364887579/52f402561312c58b472cb04c39969a50_5030022971946710212.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/10/364887579/b3817855b37bb36d71555a58ed4092b6_7868300369989172316.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/8D6E63/FFFFFF?text=岩元素角色7+活动壁纸"
             }
         },
         {
-            name: "岩元素角色8",
+            name: "云堇",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/8D6E63/FFFFFF?text=岩元素角色8",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2021/12/27/11cd696bb60df008795a46bc2d98a307_3743247752775634457.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色8+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色8+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=岩元素角色8+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色8+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色8+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/6be0a4db9bac0069d55bbe5d124c520f_4728107912686350254.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/a5a6bf125405fee31892213ca8a9c101_4102423241906713688.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/48ad1200fd8208310d659181f55c5035_554732772273729744.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/05/24/364887579/62e63ac8d0319ba8d863c24bde313eca_7789905904188476283.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/10/364887579/6f1e3be165382cf0b2c0217b933a01d4_5703116830226931855.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "岩元素角色9",
+            name: "娜维娅",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/8D6E63/FFFFFF?text=岩元素角色9",
+            avatar: "https://bbs-static.miyoushe.com/static/2024/04/10/cfca159f0849cc423fc92eccd8e74aff_2331908645632744970.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色9+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色9+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=岩元素角色9+抽卡立绘",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/11/06/364887579/ab48ce67b297bd59edf4ec3e60d2c741_5332869254492047703.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/11/06/364887579/6c0bcf8239623fec8058a9d43b394ed0_3191107449869807015.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/12/15/364887579/344202db1d4ef5a4cd73a5e8f46af5f3_6146822603847000770.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色9+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色9+角色名片",
-                wallpaper: "https://via.placeholder.com/800x600/8D6E63/FFFFFF?text=岩元素角色9+活动壁纸"
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/12/15/364887579/1d3737d686cd460d914598084974e6fa_8596578481744410445.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                wallpaper: "https://upload-bbs.miyoushe.com/upload/2023/12/15/364887579/f693e1a193994effd8dd2a4a9bc2159b_1479627537436419898.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg"
             }
         },
         {
-            name: "岩元素角色10",
+            name: "卡齐娜",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/8D6E63/FFFFFF?text=岩元素角色10",
+            avatar: "https://bbs-static.miyoushe.com/static/2024/07/17/36f5d6b8a40e14ce292b9d984e95995a_4110757151145065912.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色10+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色10+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=岩元素角色10+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色10+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色10+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2024/07/15/364887579/20a34ea22bf85a3c75d3965fbebd4e16_7547745045340525996.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2024/07/15/364887579/541dce13716046baf64af82ebf3b9a6b_3465924817165157020.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2024/08/29/364887579/2047dd589728db1035033e6e8cdb197e_7190900898144443710.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2025/04/22/364887579/5b1d59618620865d46b290e82d599025_7928384319674342824.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2024/08/29/364887579/30a76086e4199f8504f60695e31399e3_5137023377775595203.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp"
             }
         },
         {
-            name: "岩元素角色11",
+            name: "千织",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/8D6E63/FFFFFF?text=岩元素角色11",
+            avatar: "https://bbs-static.miyoushe.com/static/2024/04/10/ba35d53aa63d61612bb88ada8fd71406_8120504147408182539.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色11+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色11+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=岩元素角色11+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色11+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色11+角色名片",
-                wallpaper: "https://via.placeholder.com/800x600/8D6E63/FFFFFF?text=岩元素角色11+活动壁纸"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2024/01/29/364887579/d3beda56c277e7ffffaa4c601cfb0763_3872387164266238862.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2024/01/29/364887579/5028dcd61960c2ade69dfeb770f1deed_5358462238100104785.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2024/03/02/364887579/f8150d4e2b5b2849c22d784fdd0e5a36_3708348185020685054.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/08/17/364887579/3fa2c0dd7348da709afb0eaeaf504501_5235959953727677949.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2024/03/02/364887579/2d3963f6ca371632b209209b43f499d9_2184580139372633492.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
+                wallpaper: "https://upload-bbs.miyoushe.com/upload/2024/03/08/364887579/759eb6d6ffe2ae06687e7d8ab3105dc5_8792723334943038159.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg"
             }
         },
         {
-            name: "岩元素角色12",
+            name: "叶洛亚",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/8D6E63/FFFFFF?text=岩元素角色12",
+            avatar: "https://bbs-static.miyoushe.com/static/2025/12/15/876de01d9a589bc0d78afe49360c76d0_5775745248251547020.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色12+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色12+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=岩元素角色12+抽卡立绘",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2025/12/11/75276539/927ea0b99c6399a6409885599b6397b6_2761855274812564441.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2025/12/11/75276539/f777668c7714c8a83289ad1b23447fcb_7369034573642932310.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/5e870c4bea571bd976dfdfc2fc774e5d_8403604359675567832.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色12+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色12+角色名片"
+                namecard: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/a6ceebfcc520f5197d452d3cdf5e4e2d_366516482172246873.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "岩元素角色13",
+            name: "兹白",
             rarity: 5,
+            avatar: "https://bbs-static.miyoushe.com/static/2025/12/15/02928e8f0677d734f9fca4a19cf20ddf_4897147607124315976.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+            images: {
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2025/12/11/75276539/8fd8d090415cd6928b92c90c0e3dfa31_4493201672878745058.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2025/12/11/75276539/b107ce39cf40dc2dd8efc6be20c0b0f8_4175883726205621721.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/a964eabe035aef24d7e803ef0a52357a_550442551634635624.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色13+生日立绘",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/03deb97a2863ea9df8cf42ecbf30c2e1_1216283615470197084.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                wallpaper: "https://via.placeholder.com/800x600/8D6E63/FFFFFF?text=岩元素角色13+活动壁纸"
+            }
+        },
+        {
+            name: "岩系角色预留位",
+            rarity: 4,
             avatar: "https://via.placeholder.com/150x200/8D6E63/FFFFFF?text=岩元素角色13",
             images: {
                 portraitH: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色13+横版立绘",
                 portraitV: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色13+竖版立绘",
                 gacha: "https://via.placeholder.com/400x500/8D6E63/FFFFFF?text=岩元素角色13+抽卡立绘",
                 birthday: "https://via.placeholder.com/400x300/8D6E63/FFFFFF?text=岩元素角色13+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色13+角色名片",
-                wallpaper: "https://via.placeholder.com/800x600/8D6E63/FFFFFF?text=岩元素角色13+活动壁纸"
+                namecard: "https://via.placeholder.com/300x400/8D6E63/FFFFFF?text=岩元素角色13+角色名片"
             }
         }
     ],
@@ -1865,102 +2006,102 @@ const characterData = {
         {
             name: "纳西妲",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4CAF50/FFFFFF?text=纳西妲+头像",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2022/10/09/0bda7014949fe509ff27b0114a5ab327_2325198228245468037.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=纳西妲+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=纳西妲+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4CAF50/FFFFFF?text=纳西妲+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=纳西妲+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=纳西妲+角色名片",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/d75531d91be538149c59b0f739a7064c_2847336416602700473.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/2f28251394dd4bcbebd5b2c5fb0bff6d_850933630684507144.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/6dff21a60d81f5a51d390415eed89aa9_1362662881479443766.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2023/10/28/364887579/4468d9d8a150f56ba8103266181baac9_7276537254981050083.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/11/364887579/e6a264be177e89ca9ed3d58579176927_7748696705112654811.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/4CAF50/FFFFFF?text=纳西妲+活动壁纸"
             }
         },
         // 添加更多草元素角色...
         {
-            name: "草元素角色2",
+            name: "绮良良",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4CAF50/FFFFFF?text=草元素角色2",
+            avatar: "https://bbs-static.miyoushe.com/static/2023/05/16/d2f73894c2a0986adc5ca0b9c575f629_843864137037629130.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色2+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色2+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4CAF50/FFFFFF?text=草元素角色2+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色2+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色2+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/d855b8a3ad4ca0d95a5f747cce86b0db_1852788954668335952.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/e85214949bb0a35fd9efdc1013d4cbdd_4216550991569048874.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/04/364887579/c6c3d3f7eb907b4dc29991ef9242e685_4282987153790280026.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/01/22/364887579/952e08971ec7fb2b364bc0b3296c7bfb_4729143911630797544.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/11/364887579/8ea3e4fadb7a1e44acb74eac449f494e_7253310337665693295.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "草元素角色3",
+            name: "提纳里",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4CAF50/FFFFFF?text=草元素角色3",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2022/07/20/e4263e7093b2965550dbdf139e0d9b4c_2956924634269594979.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色3+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色3+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4CAF50/FFFFFF?text=草元素角色3+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色3+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色3+角色名片",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/41a8bbf72fba00a77168d02c85b08e25_2498821362800389699.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/f499523e5fc41864029fbce7812b70d9_205120760234996123.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/28a7e5dee3bc565ee17929e4f81e27d6_4978532471231692137.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2023/12/29/364887579/4816553a0828c698fbd0ca9eb4c90585_4287873778263652142.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/11/364887579/ea7f60daffeed1fd33d6a49850ef4b51_544295840595138813.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/4CAF50/FFFFFF?text=草元素角色3+活动壁纸"
             }
         },
         {
-            name: "草元素角色4",
+            name: "柯莱",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4CAF50/FFFFFF?text=草元素角色4",
+            avatar: "https://upload-bbs.mihoyo.com/upload/2022/07/20/25491edf60082c30f60f1af0ef1317b2_5000547721456308036.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色4+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色4+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4CAF50/FFFFFF?text=草元素角色4+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色4+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色4+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/373f2cd922eef5be2b1f55d2ee09662b_933941877291986688.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/cb4abedd9970f8c469596f4a41fa4f42_8800304421025889919.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/a405416f323a32a0f5083c083edde547_3437967800532560756.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/05/08/364887579/79c48f4c95290cad32637cd51f177261_2668452185957760812.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/11/364887579/3fb1af81c6b78b1dab6f861b31fbe782_7382758611007346770.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "草元素角色5",
+            name: "艾尔海森",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4CAF50/FFFFFF?text=草元素角色5",
+            avatar: "https://upload-bbs.miyoushe.com/upload/2022/12/15/889ce8e53fe5f84690ce304dc8c5dcbb_3093437298134130485.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色5+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色5+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4CAF50/FFFFFF?text=草元素角色5+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色5+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色5+角色名片",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/e7fbf7b775f9d26c8a94e314e955fde2_6786940871673054377.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/e2d0d604d56271decc9e36c16a491dcb_6575503559491338071.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/04/364887579/b8e9cd19002a9f3ee5852fbb66bbd76b_988786700542128981.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/02/11/364887579/95e4c038045dff231987e137e95b6b40_1672669695464421400.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/11/364887579/61fe674e27b0a221b653645b1755ccc4_8109830686297673750.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/4CAF50/FFFFFF?text=草元素角色5+活动壁纸"
             }
         },
         {
-            name: "草元素角色6",
+            name: "瑶瑶",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4CAF50/FFFFFF?text=草元素角色6",
+            avatar: "https://upload-bbs.miyoushe.com/upload/2022/12/15/c0ff56a18062b24c963fc026fa828d30_2021097412548556656.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色6+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色6+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4CAF50/FFFFFF?text=草元素角色6+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色6+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色6+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/adf1e8a8d1722dccd0df9d7ad51f1825_5912837808176334926.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/a460e7a0ca65cd1c92da0c664368d1a8_7238457992253915128.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/04/364887579/026f074618b39ef03cdd9867f7dd04ce_5265295785361531690.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/03/06/364887579/c9fc64e79dfa62e791c8e5c58f4714a3_7640327669536626875.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/11/364887579/06ee180a34d8367aa87d87c6add6b597_516178268082519157.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
-            name: "草元素角色7",
+            name: "白术",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4CAF50/FFFFFF?text=草元素角色7",
+            avatar: "https://bbs-static.miyoushe.com/static/2023/03/30/e70a7856f65407f52e33bdc7d95e6503_7703963431703351001.jpg?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色7+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色7+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4CAF50/FFFFFF?text=草元素角色7+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色7+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色7+角色名片",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/995080d7096aedfeb3112d985fa48a8b_5359402978407245257.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/f85b456f1309f27b2c2382ec9f5b39fb_6086593728833065709.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/04/364887579/9bc4c73762320f4243df2f174e88eff7_7816277454369610295.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/04/25/364887579/4ceeee496dfcaefdfd6ac1a3e2650975_6810988938796989903.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/11/364887579/148b20413d347d4df1c913d630dcfcb2_2619835297181902943.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 wallpaper: "https://via.placeholder.com/800x600/4CAF50/FFFFFF?text=草元素角色7+活动壁纸"
             }
         },
         {
-            name: "草元素角色8",
+            name: "卡维",
             rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4CAF50/FFFFFF?text=草元素角色8",
+            avatar: "https://bbs-static.miyoushe.com/static/2023/03/30/5b09ea8117fd789e09dde1d7f1906dc7_8143229906067897838.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色8+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色8+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4CAF50/FFFFFF?text=草元素角色8+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色8+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色8+角色名片"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/8f255bcf119ed891ec518beb1ce3433f_5050262880277278605.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2023/09/03/364887579/25b48c5783efacfa45d8414d6b4f9323_3252028368449731955.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2023/09/04/364887579/5671ae38a3163a987f76fb3ea9743587_8323239745638683600.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/07/16/364887579/0fb428664319e03b4c911fff3cbe41db_2324507457903338486.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2023/10/11/364887579/5fa1611011612e11753c238f16857464_477885237009605268.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png"
             }
         },
         {
@@ -1977,40 +2118,67 @@ const characterData = {
             }
         },
         {
-            name: "草元素角色10",
-            rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4CAF50/FFFFFF?text=草元素角色10",
-            images: {
-                portraitH: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色10+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色10+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4CAF50/FFFFFF?text=草元素角色10+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色10+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色10+角色名片"
-            }
-        },
-        {
-            name: "草元素角色11",
+            name: "艾梅莉埃",
             rarity: 5,
-            avatar: "https://via.placeholder.com/150x200/4CAF50/FFFFFF?text=草元素角色11",
+            avatar: "https://bbs-static.miyoushe.com/static/2024/06/12/781171480a07158a83424fc88b6f29a5_7755538763556165537.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色11+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色11+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4CAF50/FFFFFF?text=草元素角色11+抽卡立绘",
-                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色11+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色11+角色名片",
-                wallpaper: "https://via.placeholder.com/800x600/4CAF50/FFFFFF?text=草元素角色11+活动壁纸"
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2024/06/03/364887579/ac076190be78e407a2b250bf60399080_5077565670899579294.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2024/06/03/364887579/1962afd8d15c049e64e99ac4951300a8_5527281314789009119.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2024/07/15/364887579/58217244675ab386fe42a6739df24c4e_2981286596048601852.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
+                birthday: "https://upload-bbs.miyoushe.com/upload/2024/09/23/364887579/ef5a9408ef2d24598e1e0fc960e3be7d_159358307297361609.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2024/07/15/364887579/fa1a79058b0b59869cc9ddb0543b91af_8484763997993650403.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
+                wallpaper: "https://upload-bbs.miyoushe.com/upload/2024/08/02/364887579/a52851081b651c1165a1dbd2af2cfe4b_6575030597523780080.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg"
             }
         },
         {
-            name: "草元素角色12",
-            rarity: 4,
-            avatar: "https://via.placeholder.com/150x200/4CAF50/FFFFFF?text=草元素角色12",
+            name: "基尼奇",
+            rarity: 5,
+            avatar: "https://bbs-static.miyoushe.com/static/2024/07/17/67c6050105569bc4c6f74069e54e1dc3_5250700420270685764.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
             images: {
-                portraitH: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色12+横版立绘",
-                portraitV: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色12+竖版立绘",
-                gacha: "https://via.placeholder.com/400x500/4CAF50/FFFFFF?text=草元素角色12+抽卡立绘",
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2024/07/15/364887579/f647a04782679127f0c762343b130b4c_2589199458488431529.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2024/07/15/364887579/a66232414983db93939a934dc1abd9d5_1756157665642271952.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2024/08/29/364887579/070daa064ace1c51f68a719374d52697_2641374879290864810.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
+                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色11+生日立绘",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2024/08/29/364887579/8c901baba4ffa79479615c38ca4f3486_6722588752604619556.webp?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,webp",
+                wallpaper: "https://upload-bbs.miyoushe.com/upload/2024/09/13/364887579/8372dc49ea50e4c94c072b2b9483c032_6202602111560545271.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg"
+            }
+        },
+        {
+            name: "菈乌玛",
+            rarity: 5,
+            avatar: "https://bbs-static.miyoushe.com/static/2025/08/06/50060eb8294085d4d770b972b7312e3a_3650210240286907670.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+            images: {
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2025/08/03/75276539/336f96c4fe2e025b6b7525b562a41002_2863773458222930502.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2025/08/03/75276539/c3652bde140ecb6d82e4dd70ba58a241_8454022958885807363.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/384eeb5ee6b378336f2f998c9254b822_8951975069392492888.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
                 birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色12+生日立绘",
-                namecard: "https://via.placeholder.com/300x400/4CAF50/FFFFFF?text=草元素角色12+角色名片"
+                namecard: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/4218e78edf021e5e105fca468a67bba4_9174920503503377750.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                wallpaper: ""
+            }
+        },
+        {
+            name: "奈芙尔",
+            rarity: 5,
+            avatar: "https://bbs-static.miyoushe.com/static/2025/09/29/924bc49d1ae0d41dab37c3bfc38fbe79_5363496614252658973.png?x-oss-process=image/resize,s_150/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+            images: {
+                portraitH: "https://upload-bbs.miyoushe.com/upload/2025/09/12/75276539/b904982033c32c5c94653f0ac3b785cb_2817742684477407383.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                portraitV: "https://upload-bbs.miyoushe.com/upload/2025/09/12/75276539/a9628f1bfd784f2850d1b96d5c217ebf_4817556338777023583.jpg?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,jpg",
+                gacha: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/529556302e2ce89d85eb6d2435251375_7059533394899486274.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色12+生日立绘",
+                namecard: "https://upload-bbs.miyoushe.com/upload/2026/01/15/364887579/baa62329f2e429e14aaadaa763d6370c_6796538493291715840.png?x-oss-process=image//resize,s_600/quality,q_80/auto-orient,0/interlace,1/format,png",
+                wallpaper: ""
+            }
+        },
+        {
+            name: "草系角色预留位",
+            rarity: 4,
+            avatar: "",
+            images: {
+                portraitH: "",
+                portraitV: "",
+                gacha: "",
+                birthday: "https://via.placeholder.com/400x300/4CAF50/FFFFFF?text=草元素角色12+生日立绘",
+                namecard: ""
             }
         }
     ]
